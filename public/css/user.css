@@ -1,0 +1,46 @@
+.user-container {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    form {
+        max-width: 500px;
+        width: 100%;
+    }
+}
+
+.hobby-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.hobby-item .btn-remove-hobby {
+    background-color: #e3342f;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.hobby-item .btn-remove-hobby:hover {
+    background-color: #cc1f1a;
+}
+
+#btn-add-hobby {
+    display: inline-block;
+    background-color: #3490dc;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 3px;
+    border: none;
+    cursor: pointer;
+}
+
+#btn-add-hobby:hover {
+    background-color: #2779bd;
+}
