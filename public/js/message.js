@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         const startTimeout = () => {
-            timeout = setTimeout(removeMessage, 25000);
+            timeout = setTimeout(removeMessage, 2500);
         };
 
         message.addEventListener("mouseenter", resetTimeout);
