@@ -16,6 +16,7 @@ class CreateUserRequest extends RegisterRequest
     {
         return array_merge(parent::rules(), [
             'role' => ['required', 'in:' . implode(',', array_column(UserRole::cases(), 'value'))],
+            'password' => 'required|string|min:6',
         ]);
     }
 }

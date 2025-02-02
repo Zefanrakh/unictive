@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Api\UserController as ApiUserController;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\CreateUserRequest;
 use App\Models\User;
 use App\Services\Web\UserService;
 use App\Traits\DefaultApiResponseHandler;
-use App\View\Components\auth;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -25,33 +23,10 @@ class UserController extends Controller
         $this->userService = $userService;
     }
 
-    public function index(Request $request)
+    public function index()
     {
         try {
-            $response = $this->userController->index($request);
-            if (method_exists($response, 'status')) {
-                return back()->with('message', [
-                    'type' => 'error',
-                    'content' => 'Failed to fetch users from the server. Status: ' . $response->status()
-                ]);
-            }
-
-            $data = $response->toArray($request);
-            $links = [
-                'first' => $response->url(1),
-                'last' => $response->url($response->lastPage()),
-                'prev' => $response->previousPageUrl(),
-                'next' => $response->nextPageUrl(),
-            ];
-            $meta = [
-                'current_page' => $response->currentPage(),
-                'from' => $response->firstItem(),
-                'last_page' => $response->lastPage(),
-                'per_page' => $response->perPage(),
-                'to' => $response->lastItem(),
-                'total' => $response->total(),
-            ];
-            return view('users.index', compact('data', 'links', 'meta'));
+            return $this->userService->indexUsers();
         } catch (Exception $e) {
             return $this->handleApiErrorRedirect($e->getMessage());
         }
@@ -65,14 +40,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         try {
-            $createUserRequest = CreateUserRequest::createFrom($request);
-            $response = $this->userController->create($createUserRequest);
-            if ($response->status() !== 201 && $response->status() !== 200) {
-                return $this->handleApiErrorRedirect($response->getData()->message);
-            }
-
-            $user = $response->getData()->user ?? [];
-            return redirect()->route("users.show", ["user" => $user->id]);
+            return $this->userService->createUser($request);
         } catch (Exception $e) {
             return $this->handleApiErrorRedirect($e->getMessage());
         }
@@ -84,9 +52,8 @@ class UserController extends Controller
             if ($user->id == auth()->user()->id) {
                 return redirect()->route('profile');
             }
-            $response = $this->userController->show($user);
 
-            return $this->userService->showUser($request, $response);
+            return $this->userService->showUser($user);
         } catch (Exception $e) {
             return $this->handleApiErrorRedirect($e->getMessage());
         }
@@ -101,12 +68,10 @@ class UserController extends Controller
         }
     }
 
-    public function profile(Request $request)
+    public function profile()
     {
         try {
-            $response = $this->userController->show(auth()->user());
-
-            return $this->userService->showUser($request, $response);
+            return $this->userService->showUser(auth()->user());
         } catch (Exception $e) {
             return $this->handleApiErrorRedirect($e->getMessage());
         }
@@ -125,15 +90,7 @@ class UserController extends Controller
     public function destroy(Request $request, User $user)
     {
         try {
-            $response = $this->userController->destroy($user);
-            if ($response->status() !== 201 && $response->status() !== 200) {
-                return $this->handleApiErrorRedirect($response->getData()->message);
-            }
-
-            return redirect()->route("users.index")->with('message', [
-                'type' => 'success',
-                'content' => $response->getData()->message ?? 'Delete user successfully!',
-            ]);
+            return $this->userService->destroyUser($user);
         } catch (Exception $e) {
             return $this->handleApiErrorRedirect($e->getMessage());
         }

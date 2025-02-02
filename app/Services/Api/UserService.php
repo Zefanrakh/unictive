@@ -59,10 +59,12 @@ class UserService
         if (isset($data['hobbies'])) {
             $user->hobbies()->delete();
             foreach ($data['hobbies'] as $hobbyName) {
-                Hobby::create([
-                    'name' => $hobbyName,
-                    'user_id' => $user->id,
-                ]);
+                if (!empty($hobbyName)) {
+                    Hobby::create([
+                        'name' => $hobbyName,
+                        'user_id' => $user->id,
+                    ]);
+                }
             }
         }
     }
