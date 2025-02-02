@@ -5,9 +5,9 @@
         <h1>Create User</h1>
         <form method="POST" action="{{ route('users.store') }}">
             @csrf
-            <x-form-group label="Name" name="name" :value="$user['name'] ?? ''" />
-            <x-form-group label="Email" name="email" :value="$user['email'] ?? ''" />
-            <x-form-group label="Password" name="password" :value="$user['password'] ?? ''" type="password" />
+            <x-form-group label="Name" name="name" :value="$user['name'] ?? ''" required />
+            <x-form-group label="Email" name="email" :value="$user['email'] ?? ''" required />
+            <x-form-group label="Password" name="password" :value="$user['password'] ?? ''" type="password" required />
             <div class="form-group">
                 <label>Hobbies</label>
                 <div id="hobbies-container">

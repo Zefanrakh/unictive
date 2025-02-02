@@ -23,14 +23,14 @@ class FormGroup extends Component
         $type = 'text',
         $value = null,
         $id = null,
-        $required = null
+        $required = false
     ) {
         $this->label = $label;
         $this->type = $type;
         $this->name = $name;
         $this->value = $value ?? old($name, '');
         $this->id = $id ?? $name;
-        $this->required = $required;
+        $this->required = $required ? 'required' : '';
     }
 
     /**
