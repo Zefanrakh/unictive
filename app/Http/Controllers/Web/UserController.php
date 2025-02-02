@@ -92,7 +92,7 @@ class UserController extends Controller
         }
     }
 
-    public function update(Request $request, $user)
+    public function update(Request $request, User $user)
     {
         try {
             return $this->userService->updateUser($request, $user);
