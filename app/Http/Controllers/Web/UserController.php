@@ -72,19 +72,18 @@ class UserController extends Controller
             }
 
             $user = $response->getData()->user ?? [];
-            return redirect()->route("users.show", ["userId" => $user->id]);
+            return redirect()->route("users.show", ["user" => $user->id]);
         } catch (Exception $e) {
             return $this->handleApiErrorRedirect($e->getMessage());
         }
     }
 
-    public function show(Request $request, $userId)
+    public function show(Request $request, User $user)
     {
         try {
-            if ($userId == auth()->user()->id) {
+            if ($user->id == auth()->user()->id) {
                 return redirect()->route('profile');
             }
-            $user = User::findOrFail($userId);
             $response = $this->userController->show($user);
 
             return $this->userService->showUser($request, $response);
@@ -93,10 +92,9 @@ class UserController extends Controller
         }
     }
 
-    public function update(Request $request, $userId)
+    public function update(Request $request, $user)
     {
         try {
-            $user = User::findOrFail($userId);
             return $this->userService->updateUser($request, $user);
         } catch (Exception $e) {
             return $this->handleApiErrorRedirect($e->getMessage());
@@ -124,10 +122,9 @@ class UserController extends Controller
         }
     }
 
-    public function destroy(Request $request, $userId)
+    public function destroy(Request $request, User $user)
     {
         try {
-            $user = User::findOrFail($userId);
             $response = $this->userController->destroy($user);
             if ($response->status() !== 201 && $response->status() !== 200) {
                 return $this->handleApiErrorRedirect($response->getData()->message);

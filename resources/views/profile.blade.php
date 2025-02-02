@@ -9,7 +9,7 @@
         @endif
 
         <form method="POST"
-            action="{{ request()->routeIs('users.show') ? route('users.update', ['userId' => $user['id']]) : route('profile.update') }}">
+            action="{{ request()->routeIs('users.show') ? route('users.update', ['user' => $user['id']]) : route('profile.update') }}">
             @csrf
             <x-form-group label="Name" name="name" :value="$user['name'] ?? ''" />
             <x-form-group label="Email" name="email" :value="$user['email'] ?? ''" />

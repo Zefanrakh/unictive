@@ -45,7 +45,7 @@ Route::middleware(['auth:web'])->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('users.index');
             Route::get('/create', [UserController::class, 'showCreateForm'])->name('users.create');
             Route::post('', [UserController::class, 'store'])->name('users.store');
-            Route::prefix('/{userId}')->group(function () {
+            Route::prefix('/{user}')->group(function () {
                 Route::get('/', [UserController::class, 'show'])->name('users.show');
                 Route::post('/', [UserController::class, 'update'])->name('users.update');
                 Route::delete('/', [UserController::class, 'destroy'])->name('users.destroy');
