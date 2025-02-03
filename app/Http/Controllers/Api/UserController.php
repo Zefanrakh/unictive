@@ -9,7 +9,9 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\UserResourceCollection;
 use App\Models\User;
 use App\Services\Api\UserService;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -40,10 +42,20 @@ class UserController extends Controller
 
     public function create(CreateUserRequest $request)
     {
-        $data = $request->all();
-        $response = $this->userService->createUser($data);
+        DB::beginTransaction();
 
-        return response()->json(collect($response)->only(['message', 'user']), 201);
+        try {
+            $data = $request->all();
+            $response = $this->userService->createUser($data);
+
+            return response()->json(collect($response)->only(['message', 'user']), 201);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Failed to create user',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function show($user)
@@ -53,18 +65,38 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user)
     {
-        $data = $request->only(['name', 'email', 'password', 'hobbies']);
-        $updatedUser = $this->userService->updateUserWithHobbies($user, $data);
+        DB::beginTransaction();
 
-        return response()->json([
-            'message' => 'User updated successfully',
-            'user' => new UserResource($updatedUser),
-        ], 200);
+        try {
+            $data = $request->only(['name', 'email', 'password', 'hobbies']);
+            $updatedUser = $this->userService->updateUserWithHobbies($user, $data);
+
+            return response()->json([
+                'message' => 'User updated successfully',
+                'user' => new UserResource($updatedUser),
+            ], 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Failed to create user',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     public function destroy(User $user)
     {
-        $response = $this->userService->deleteUser($user);
-        return response()->json($response, 200);
+        DB::beginTransaction();
+
+        try {
+            $response = $this->userService->deleteUser($user);
+            return response()->json($response, 200);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Failed to create user',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

@@ -32,7 +32,7 @@ class UserController extends Controller
         }
     }
 
-    public function showCreateForm(Request $request)
+    public function showCreateForm()
     {
         return view('users.create');
     }
